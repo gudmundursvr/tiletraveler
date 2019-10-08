@@ -37,25 +37,29 @@ def print_directions(directions_str):
         first = False
     print(".")
         
-def find_directions(col, row):
+def find_directions(col, row, t_coins):
     ''' Returns valid directions as a string given the supplied location '''
     if col == 1 and row == 1:   # (1,1)
         valid_directions = NORTH
     elif col == 1 and row == 2: # (1,2)
+        t_coins = pull_a_lever(total_coins)
         valid_directions = NORTH+EAST+SOUTH
     elif col == 1 and row == 3: # (1,3)
         valid_directions = EAST+SOUTH
     elif col == 2 and row == 1: # (2,1)
         valid_directions = NORTH
     elif col == 2 and row == 2: # (2,2)
+        t_coins = pull_a_lever(total_coins)
         valid_directions = SOUTH+WEST
     elif col == 2 and row == 3: # (2,3)
+        t_coins = pull_a_lever(total_coins)
         valid_directions = EAST+WEST
     elif col == 3 and row == 2: # (3,2)
+        t_coins = pull_a_lever(total_coins)
         valid_directions = NORTH+SOUTH
     elif col == 3 and row == 3: # (3,3)
         valid_directions = SOUTH+WEST
-    return valid_directions
+    return valid_directions, t_coins
 
 def play_one_move(col, row, valid_directions):
     ''' Plays one move of the game
@@ -71,10 +75,19 @@ def play_one_move(col, row, valid_directions):
         victory = is_victory(col, row)
     return victory, col, row
 
+def pull_a_lever(t_coins):
+    level_answ = input("Pull a lever (y/n): ")
+    level_answ = level_answ.lower()
+    if level_answ == "y":
+        t_coins +=1
+        print("You received 1 coin, your total is now " + str (t_coins) + ".")
+    return t_coins
+
 # The main program starts here
 victory = False
 row = 1
 col = 1
+total_coins = 0
 
 valid_directions = NORTH
 print_directions(valid_directions)
@@ -82,7 +95,7 @@ print_directions(valid_directions)
 while not victory:
     victory, col, row = play_one_move(col, row, valid_directions)
     if victory:
-        print("Victory!")
+        print("Victory! Total coins " + str(total_coins) +".")
     else:
-        valid_directions = find_directions(col, row)
+        valid_directions, total_coins = find_directions(col, row, total_coins)
         print_directions(valid_directions)
